@@ -1,4 +1,29 @@
-# fastMCP Köln Presse
+# fastMCP Köln Presse 🚀
+
+**✅ LIVE & WORKING** - Robuster MCP-Server für RSS-Pressemitteilungen der Stadt Köln mit vollständiger Funktionalität!
+
+## 🎯 Quick Test
+
+**Local Testing** (alle 4 Tools getestet & funktionsfähig):
+```bash
+# Server starten
+python -m koeln_presse.server
+
+# Health Check
+curl http://localhost:8000/health
+
+# Latest Press Releases
+curl -X POST http://localhost:8000/tools/latest -H "Content-Type: application/json" -d "{}"
+
+# Search Tools
+curl -X POST http://localhost:8000/tools/search -H "Content-Type: application/json" -d '{"query":"Gesundheit","limit":5}'
+```
+
+**fastMCP Cloud**: https://cologne-open-data-fastmcp.fastmcp.app/mcp
+
+---
+
+# FastMCP Köln Presse
 
 Ein robustes MCP-Server-Projekt, das RSS-Pressemitteilungen der Stadt Köln konsumiert und als MCP-Tools exponiert.
 
