@@ -2,6 +2,7 @@
 
 import hashlib
 import time
+import asyncio
 from typing import Any, Dict, Optional, Callable
 from functools import wraps
 import threading
@@ -113,6 +114,8 @@ def retry_on_failure(
 ):
     """Decorator for retrying function calls with exponential backoff.
     
+    Supports both sync and async functions.
+    
     Args:
         max_attempts: Maximum number of retry attempts
         delay: Initial delay between retries in seconds
@@ -124,7 +127,26 @@ def retry_on_failure(
     """
     def decorator(func: Callable) -> Callable:
         @wraps(func)
-        def wrapper(*args, **kwargs):
+        async def async_wrapper(*args, **kwargs):
+            last_exception = None
+            
+            for attempt in range(max_attempts):
+                try:
+                    return await func(*args, **kwargs)
+                except exceptions as e:
+                    last_exception = e
+                    if attempt < max_attempts - 1:
+                        wait_time = delay * (backoff_factor ** attempt)
+                        await asyncio.sleep(wait_time)
+                    else:
+                        raise
+            
+            # Should never reach here, but just in case
+            if last_exception:
+                raise last_exception
+        
+        @wraps(func)
+        def sync_wrapper(*args, **kwargs):
             last_exception = None
             
             for attempt in range(max_attempts):
@@ -141,7 +163,12 @@ def retry_on_failure(
             # Should never reach here, but just in case
             if last_exception:
                 raise last_exception
-        return wrapper
+        
+        # Return async wrapper for async functions, sync wrapper for sync functions
+        if asyncio.iscoroutinefunction(func):
+            return async_wrapper
+        else:
+            return sync_wrapper
     return decorator
 
 

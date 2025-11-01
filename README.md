@@ -81,7 +81,7 @@ source .venv/bin/activate
 3. **Dependencies installieren**:
 ```bash
 pip install -U pip
-pip install fastmcp httpx lxml pydantic python-dateutil uvicorn pytest
+pip install fastmcp fastapi httpx lxml pydantic python-dateutil uvicorn pytest
 ```
 
 4. **Umgebungsvariablen konfigurieren** (optional):
